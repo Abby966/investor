@@ -27,7 +27,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
+from decouple import config
+SECRET_KEY = config('SECRET_KEY')
 # Application definition
 
 INSTALLED_APPS = [
