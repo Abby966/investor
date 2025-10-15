@@ -35,9 +35,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'investor_app',  # Your app
-    'rest_framework',  # Django REST Framework
-    'corsheaders',    # For CORS
+    'investor_app.apps.InvestorAppConfig',  # Updated to use AppConfig
+    'rest_framework',
+    'corsheaders',
 ]
 
 AUTH_USER_MODEL = 'investor_app.CustomUser'
