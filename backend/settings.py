@@ -38,9 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'jobs',
-    'rest_framework',
-    'investor_app',
+    'investor_app',  # Your app
+    'rest_framework',  # Django REST Framework
+    'corsheaders',    # For CORS
 ]
 AUTH_USER_MODEL = 'investor_app.CustomUser'
 MIDDLEWARE = [
