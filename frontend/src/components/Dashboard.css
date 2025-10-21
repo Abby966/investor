@@ -1,0 +1,103 @@
+/* Dashboard.css */
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f3f4f6;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+  }
+  
+  .navbar {
+    background-color: #4f46e5;
+    color:rgb(141, 16, 16);
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .navbar a {
+    color: white;
+    text-decoration: none;
+    margin-left: 15px;
+    font-weight: 500;
+  }
+  
+  .navbar a:hover {
+    text-decoration: underline;
+    color: brown;
+  }
+  
+  .card {
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    padding: 15px;
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
+  }
+  
+  .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+  }
+  
+  .btn {
+    border-radius: 8px;
+    transition: all 0.2s ease;
+  }
+  
+  .btn-primary {
+    background-color: #4f46e5;
+    border: none;
+    color: white;
+  }
+  
+  .btn-primary:hover {
+    background-color: #3730a3;
+  }
+  
+  .btn-danger {
+    background-color: #ef4444;
+    border: none;
+    color: white;
+  }
+  
+  .btn-danger:hover {
+    background-color: #b91c1c;
+  }
+  
+  .btn-secondary {
+    background-color: #6b7280;
+    border: none;
+    color: white;
+  }
+  
+  .btn-secondary:hover {
+    background-color: #4b5563;
+  }
+  
+  textarea,
+  input {
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    padding: 8px;
+    width: 100%;
+    margin-bottom: 10px;
+  }
+  
+  textarea:focus,
+  input:focus {
+    outline: none;
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+  }
+  
