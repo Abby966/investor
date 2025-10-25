@@ -2,18 +2,19 @@ from pathlib import Path
 from decouple import config
 import os
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+# --------------------
+# Base
+# --------------------
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-z@pvlgcn_864&h%%pzr#1)uarj+r^b!^t89@3ft#he)0yb=&cs')
+DEBUG = config('DEBUG', default=False, cast=bool)  # Set False for production
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', default=True, cast=bool)
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='*').split(',')
 
-ALLOWED_HOSTS = ['*']  # For Railway, allow all hosts; adjust later for security
-
-# Application definition
+# --------------------
+# Installed apps
+# --------------------
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -29,6 +30,9 @@ INSTALLED_APPS = [
 
 AUTH_USER_MODEL = 'investor_app.CustomUser'
 
+# --------------------
+# Middleware
+# --------------------
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
@@ -39,33 +43,36 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-     
 ]
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-
-
-
+# --------------------
+# URL & WSGI
+# --------------------
 ROOT_URLCONF = 'backend.urls'
+WSGI_APPLICATION = 'backend.wsgi.application'
 
+# --------------------
+# Templates
+# --------------------
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'frontend/build')],  # if React build
+        'DIRS': [os.path.join(BASE_DIR, 'frontend', 'build')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
-                ...
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
             ],
         },
     },
 ]
 
-WSGI_APPLICATION = 'backend.wsgi.application'
-
-# Database (SQLite for now; you can change to Postgres in production)
+# --------------------
+# Database
+# --------------------
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -73,7 +80,9 @@ DATABASES = {
     }
 }
 
+# --------------------
 # Password validation
+# --------------------
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',},
@@ -81,28 +90,55 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',},
 ]
 
+# --------------------
 # Internationalization
+# --------------------
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# CORS Configuration
-CORS_ALLOWED_ORIGINS = ['http://localhost:3000']
+# --------------------
+# CORS
+# --------------------
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000',
+]
 
-# REST Framework Configuration
+# --------------------
+# REST Framework
+# --------------------
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
     ],
 }
-ALLOWED_HOSTS = ['*']  # for testing; later replace with your domain
 
-
-# Static files (CSS, JavaScript, Images)
+# --------------------
+# Static files (WhiteNoise)
+# --------------------
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# Default primary key field type
+# --------------------
+# Logging to avoid Railway rate limit
+# --------------------
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'WARNING',  # Only warnings and errors
+    },
+}
+
+# --------------------
+# Default primary key
+# --------------------
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
