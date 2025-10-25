@@ -2,7 +2,7 @@ from django.urls import path
 from .views import (
     # Auth
     SignupView, 
-    frontend_home,
+   
     LoginView,
     ProfileView, # General user info (id, role, etc)
     InvestorProfileView, # NEW: The investor's editable profile
