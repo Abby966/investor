@@ -1,95 +1,91 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import 'bootstrap/dist/css/bootstrap.min.css';
-import axios from "axios"; // make sure this is imported
+import axios from "axios";
+import { Link } from "react-router-dom";
+import "./Auth.css"; // Your stylish styles
 
-function LoginPage() {
+export default function LoginPage() {
   const [formData, setFormData] = useState({
     username: "",
     password: "",
   });
+  const [error, setError] = useState("");
 
-  const navigate = useNavigate();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
 
+    try {
+      const response = await axios.post(
+        "http://127.0.0.1:8000/api/login/",
+        formData
+      );
+
+      // ✅ --- NEW REDIRECT LOGIC ---
+      if (response.data.token && response.data.role) {
+        localStorage.setItem("token", response.data.token);
+        
+        // Check the role and redirect!
+        if (response.data.role === 'investor') {
+          window.location.href = "/investor-dashboard"; // Go to investor page
+        } else {
+          window.location.href = "/"; // Go to entrepreneur home
+        }
+      } else {
+        setError("Login failed: Invalid response from server.");
+      }
+      // --- END OF NEW LOGIC ---
+
+    } catch (err) {
+      console.error(err.response?.data || err.message);
+      if (err.response && err.response.data && err.response.data.error) {
+        setError(err.response.data.error); // e.g., "Invalid username or password"
+      } else {
+        setError("Login failed. Please try again.");
+      }
+    }
+  };
+
+  // ... (the rest of your handleChange and return() is the same)
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.post("http://127.0.0.1:8000/api/login/", {
-        username: formData.username,
-        password: formData.password,
-      });
-  
-      // Save token and role
-      localStorage.setItem("token", response.data.token);
-      localStorage.setItem("role", response.data.role);
-      localStorage.setItem("username", response.data.username);
-  
-      // Redirect based on role
-      if (response.data.role === "entrepreneur") {
-        navigate("/entrepreneur-dashboard");
-      } else if (response.data.role === "investor") {
-        navigate("/investor-dashboard");
-      }
-    } catch (err) {
-      console.error(err);
-      alert("Invalid credentials!");
-    }
-  };
-  
-  
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.post("http://127.0.0.1:8000/api/login/", formData);
-  
-      localStorage.setItem("token", response.data.token);
-  
-    
-      if (response.data.role === "entrepreneur") {
-        navigate("/entrepreneur-dashboard");
-      } else {
-        navigate("/investor-dashboard");
-      }
-    } catch (error) {
-      alert("Invalid credentials");
-    }
-  };
-  
   return (
-    <div className="container mt-5">
-      <h2 className="text-center mb-4">Login</h2>
-      <form className="mx-auto" style={{ maxWidth: "400px" }} onSubmit={handleSubmit}>
-        <div className="mb-3">
-          <label className="form-label">Username</label>
+    <div className="auth-container">
+      <h2 className="auth-title">Welcome Back!</h2>
+      {error && <div className="auth-error">{error}</div>}
+      <form onSubmit={handleSubmit}>
+        <div className="auth-form-group">
+          <label className="auth-label" htmlFor="username">Username</label>
           <input
+            id="username"
             type="text"
-            className="form-control"
             name="username"
+            className="auth-input"
             value={formData.username}
             onChange={handleChange}
             required
           />
         </div>
-        <div className="mb-3">
-          <label className="form-label">Password</label>
+        <div className="auth-form-group">
+          <label className="auth-label" htmlFor="password">Password</label>
           <input
+            id="password"
             type="password"
-            className="form-control"
             name="password"
+            className="auth-input"
             value={formData.password}
             onChange={handleChange}
             required
           />
         </div>
-        <button type="submit" className="btn btn-primary w-100">Login</button>
+        <button className="auth-button" type="submit">
+          Login
+        </button>
       </form>
+      <p className="auth-toggle-link">
+        Don't have an account? <Link to="/signup">Sign Up</Link>
+      </p>
     </div>
   );
 }
-
-
-export default LoginPage;

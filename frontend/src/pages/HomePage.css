@@ -1,0 +1,135 @@
+/* HomePage.css */
+
+/* A soft, professional background for the whole page */
+.home-page-wrapper {
+    /* --- ✅ THIS IS THE FIX --- */
+    /* This pushes your content down 80px to make room for the navbar */
+    padding-top: 80px; 
+    /* ------------------------- */
+  
+    width: 100%;
+    min-height: 90vh;
+    background-color: #f8f9fa;
+    padding-bottom: 2.5rem; /* We keep the old padding */
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    box-sizing: border-box; /* Ensures padding is calculated correctly */
+  }
+  
+  .home-container {
+    max-width: 900px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+  
+  /* The new welcome banner */
+  .welcome-banner {
+    display: flex;
+    align-items: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 12px;
+    padding: 2.5rem;
+    margin-bottom: 2.5rem;
+    box-shadow: 0 10px 30px rgba(118, 75, 162, 0.3);
+  }
+  
+  .welcome-banner img {
+    width: 120px;
+    margin-right: 2rem;
+    border-radius: 50%;
+    background: white;
+    padding: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  .welcome-text h1 {
+    font-weight: 700;
+    font-size: 2.25rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .welcome-text p {
+    font-size: 1.1rem;
+    font-weight: 300;
+    opacity: 0.9;
+    margin: 0;
+    max-width: 600px;
+  }
+  
+  /* The main form "card" */
+  .add-project-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 2.5rem;
+    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.07);
+  }
+  
+  .form-title {
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 2rem;
+    text-align: center;
+    font-size: 1.75rem;
+  }
+  
+  /* Modern form styles */
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+  
+  .form-label {
+    display: block;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+  }
+  
+  .form-input,
+  .form-textarea {
+    width: 100%;
+    padding: 0.9rem 1rem;
+    font-size: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fdfdfd;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+  }
+  
+  .form-input:focus,
+  .form-textarea:focus {
+    outline: none;
+    border-color: #764ba2;
+    box-shadow: 0 0 0 3px rgba(118, 75, 162, 0.15);
+  }
+  
+  /* Style placeholders */
+  .form-input::placeholder,
+  .form-textarea::placeholder {
+    color: #aaa;
+    font-weight: 300;
+  }
+  
+  /* The main "Add Project" button */
+  .form-button {
+    width: 100%;
+    padding: 0.9rem 1rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff;
+    background: linear-gradient(90deg, #8e2de2 0%, #4a00e0 100%);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(139, 45, 226, 0.25);
+  }
+  
+  .form-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(139, 45, 226, 0.35);
+  }

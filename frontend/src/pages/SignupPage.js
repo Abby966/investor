@@ -1,16 +1,16 @@
 import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
-import 'bootstrap/dist/css/bootstrap.min.css';
+import { useNavigate, Link } from "react-router-dom";
+import "./Auth.css"; // Import the new styles
 
-function SignupPage() {
+export default function SignupPage() {
   const [formData, setFormData] = useState({
     username: "",
     email: "",
     password: "",
-    role: "entrepreneur",
+    role: "entrepreneur", // Default role
   });
-
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -19,127 +19,104 @@ function SignupPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError(""); // Clear previous errors
 
     try {
-      // 1️⃣ Signup
-      const response = await axios.post(
-        "http://localhost:8000/api/signup/",
-        formData,
-        { headers: { "Content-Type": "application/json" } }
-      );
+      // Call your Django API's signup endpoint
+      await axios.post("http://127.0.0.1:8000/api/signup/", formData);
 
-      alert("✅ Signup successful!");
-
-      // 2️⃣ Auto-login
-      const loginRes = await axios.post(
-        "http://localhost:8000/api/login/",
-        {
-          username: formData.username,
-          password: formData.password
-        },
-        { headers: { "Content-Type": "application/json" } }
-      );
-
-      // 3️⃣ Store token & user info
-      localStorage.setItem("token", loginRes.data.token);
-      localStorage.setItem("user", JSON.stringify({
-        username: loginRes.data.username,
-        role: loginRes.data.role
-      }));
-
-      // 4️⃣ Redirect to dashboard based on role
-      if (formData.role === "entrepreneur") {
-        navigate("/entrepreneur-dashboard");
-      } else if (formData.role === "investor") {
-        navigate("/investor-dashboard");
-      }
-
+      alert("✅ Signup successful! Please log in.");
+      // Redirect to the login page
+      navigate("/login");
     } catch (err) {
-      console.error(err);
-
-      let msg = "Signup failed!";
+      console.error(err.response?.data || err.message);
       if (err.response && err.response.data) {
-        if (typeof err.response.data === "object") {
-          msg = Object.entries(err.response.data)
-            .map(([field, errors]) => {
-              if (Array.isArray(errors)) {
-                return `${field}: ${errors.join(", ")}`;
-              } else {
-                return `${field}: ${errors}`;
-              }
-            })
-            .join("\n");
+        if (err.response.data.username) {
+          setError(err.response.data.username[0]); // e.g., "A user with that username already exists."
+        } else if (err.response.data.email) {
+            setError(err.response.data.email[0]);
         } else {
-          msg = err.response.data;
+          setError("Signup failed. Please check all your details.");
         }
+      } else {
+        setError("Signup failed. Please try again later.");
       }
-      alert(msg);
     }
   };
 
   return (
-    <div className="container mt-5">
-      <h2 className="text-center mb-4">Create an Account</h2>
-      <form className="mx-auto" style={{ maxWidth: "400px" }} onSubmit={handleSubmit}>
-        <div className="mb-3">
-          <label className="form-label">Username</label>
+    <div className="auth-container">
+      <h2 className="auth-title">Create Account</h2>
+      {error && <div className="auth-error">{error}</div>}
+
+      <form onSubmit={handleSubmit}>
+        <div className="auth-form-group">
+          <label className="auth-label" htmlFor="username">
+            Username
+          </label>
           <input
+            id="username"
             type="text"
-            className="form-control"
             name="username"
-            onChange={handleChange}
+            className="auth-input"
             value={formData.username}
+            onChange={handleChange}
             required
           />
         </div>
-        <div className="mb-3">
-          <label className="form-label">Email</label>
+        
+        <div className="auth-form-group">
+          <label className="auth-label" htmlFor="email">
+            Email
+          </label>
           <input
+            id="email"
             type="email"
-            className="form-control"
             name="email"
-            onChange={handleChange}
+            className="auth-input"
             value={formData.email}
+            onChange={handleChange}
             required
           />
         </div>
-        <div className="mb-3">
-          <label className="form-label">Password</label>
+
+        <div className="auth-form-group">
+          <label className="auth-label" htmlFor="password">
+            Password
+          </label>
           <input
+            id="password"
             type="password"
-            className="form-control"
             name="password"
-            onChange={handleChange}
+            className="auth-input"
             value={formData.password}
+            onChange={handleChange}
             required
           />
         </div>
-        <div className="mb-3">
-          <label className="form-label">Role</label>
+
+        <div className="auth-form-group">
+          <label className="auth-label" htmlFor="role">I am an:</label>
           <select
-            className="form-select"
+            id="role"
             name="role"
-            onChange={handleChange}
+            className="auth-select"
             value={formData.role}
+            onChange={handleChange}
           >
             <option value="entrepreneur">Entrepreneur</option>
             <option value="investor">Investor</option>
           </select>
         </div>
-        <button type="submit" className="btn btn-primary w-100">Sign Up</button>
+
+        <button className="auth-button" type="submit">
+          Sign Up
+        </button>
       </form>
 
-      <div className="text-center mt-3">
-        <p>
-          Already have an account?{" "}
-          <Link to="/login" className="text-decoration-none">
-            Login
-          </Link>
-        </p>
-      </div>
+      <p className="auth-toggle-link">
+        Already have an account? <Link to="/login">Login</Link>
+      </p>
     </div>
   );
 }
-
-export default SignupPage;
-

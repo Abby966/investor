@@ -1,0 +1,59 @@
+/* ProfilePage.css */
+
+.profile-page-layout {
+    /* Inherits styles from Dashboard.css */
+  }
+  
+  /* Container for the single card */
+  .profile-card-container {
+    max-width: 700px; /* Adjust width as needed */
+    margin: 0 auto; /* Center the card */
+  }
+  
+  /* Remove the two-column layout */
+  /* .profile-content-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr; 
+    gap: 2rem; 
+    max-width: 1200px; 
+    margin: 0 auto; 
+    align-items: start; 
+  } 
+  */
+  
+  /* Keep styles for the displayed profile info */
+  .profile-info-item {
+    margin-bottom: 1.25rem;
+  }
+  
+  .profile-info-item .form-label {
+    margin-bottom: 0.25rem; 
+    color: #333;
+  }
+  
+  .profile-info-item p {
+    margin: 0;
+    font-size: 1rem;
+    color: #555;
+  }
+  
+  .interest-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+  
+  .interest-tag {
+    background-color: #e9efff; 
+    color: #667eea; 
+    padding: 0.3rem 0.75rem;
+    border-radius: 15px;
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
+  
+  /* Keep responsive adjustments (though they don't do much now) */
+  @media (max-width: 992px) {
+    /* No specific styles needed here anymore */
+  }

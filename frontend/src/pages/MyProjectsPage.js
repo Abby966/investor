@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import axios from "axios";
-import "../components/Dashboard.css";
-import Navbar from "../components/Navbar";
-
+import "../components/Dashboard.css"; // ✅ Our stylish new file
 
 export default function MyProjectsPage({ myProjects, fetchProjects }) {
+  
+  // --- YOUR LOGIC (UNCHANGED) ---
   const token = localStorage.getItem("token");
   const [editingProjectId, setEditingProjectId] = useState(null);
   const [editFormData, setEditFormData] = useState({
@@ -60,80 +60,109 @@ export default function MyProjectsPage({ myProjects, fetchProjects }) {
       alert("❌ Failed to delete project");
     }
   };
+  // --- END OF LOGIC ---
 
-  return (
-    <div className="container py-4">
-      <h2 className="text-center mb-4 fw-bold">📁 My Projects</h2>
-      {myProjects.length === 0 ? (
-        <p className="text-muted">You haven’t added any projects yet.</p>
-      ) : (
-        <div className="row">
-          {myProjects.map((p) => (
-            <div key={p.id} className="col-md-4 mb-3">
-              <div className="card shadow-sm h-100">
-                <div className="card-body">
-                  {editingProjectId === p.id ? (
-                    <form onSubmit={handleEditSubmit}>
-                      <input
-                        type="text"
-                        name="headline"
-                        className="form-control mb-2"
-                        value={editFormData.headline}
-                        onChange={handleEditChange}
-                        required
-                      />
-                      <textarea
-                        name="full_description"
-                        className="form-control mb-2"
-                        rows="3"
-                        value={editFormData.full_description}
-                        onChange={handleEditChange}
-                        required
-                      ></textarea>
-                      <input
-                        type="number"
-                        name="budget"
-                        className="form-control mb-2"
-                        value={editFormData.budget}
-                        onChange={handleEditChange}
-                        required
-                      />
-                      <button type="submit" className="btn btn-success btn-sm me-2">
-                        Save
-                      </button>
-                      <button
-                        type="button"
-                        className="btn btn-secondary btn-sm"
-                        onClick={() => setEditingProjectId(null)}
-                      >
-                        Cancel
-                      </button>
-                    </form>
-                  ) : (
-                    <>
-                      <h6 className="fw-bold">{p.headline}</h6>
-                      <p>{p.full_description}</p>
-                      <p className="fw-bold text-success">💰 ${p.budget}</p>
-                      <button
-                        className="btn btn-warning btn-sm me-2"
-                        onClick={() => handleEditClick(p)}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        className="btn btn-danger btn-sm"
-                        onClick={() => handleDelete(p.id)}
-                      >
-                        Delete
-                      </button>
-                    </>
-                  )}
-                </div>
-              </div>
-            </div>
-          ))}
+
+  // --- ✅ NEW RENDER LOGIC ---
+
+  // 1. Show loading spinner
+  //    (We check for `null` which is the new initial state from App.js)
+  if (myProjects === null) {
+    return (
+      // We apply the layout fix here too, so the spinner is centered correctly
+      <div className="page-wrapper" style={{ paddingTop: '85px' }}>
+        <div className="loader-wrapper" style={{ height: '70vh' }}>
+          <div className="loader"></div>
         </div>
-      )}
+      </div>
+    );
+  }
+
+  // 2. Show empty message
+  if (myProjects.length === 0) {
+    return (
+      <div className="page-wrapper" style={{ paddingTop: '85px' }}>
+        <h2 className="page-title">My Projects</h2>
+        <p className="text-muted text-center" style={{fontSize: '1.1rem'}}>
+          You haven’t added any projects yet.
+        </p>
+      </div>
+    );
+  }
+
+  // 3. Show projects
+  return (
+    // ✅ BULLETPROOF LAYOUT FIX (same as HomePage.js)
+    <div className="page-wrapper" style={{ paddingTop: '85px' }}>
+      <h2 className="page-title">My Projects</h2>
+      <div className="projects-grid">
+        {myProjects.map((p) => (
+          <div key={p.id} className="project-card"> {/* Animation is here! */}
+            {editingProjectId === p.id ? (
+              // --- EDIT FORM ---
+              <form onSubmit={handleEditSubmit} className="edit-form">
+                <input
+                  type="text"
+                  name="headline"
+                  className="form-input"
+                  value={editFormData.headline}
+                  onChange={handleEditChange}
+                  required
+                />
+                <textarea
+                  name="full_description"
+                  className="form-textarea"
+                  rows="4"
+                  value={editFormData.full_description}
+                  onChange={handleEditChange}
+                  required
+                ></textarea>
+                <input
+                  type="number"
+                  name="budget"
+                  className="form-input"
+                  value={editFormData.budget}
+                  onChange={handleEditChange}
+                  required
+                />
+                <div className="edit-form-actions">
+                  <button type="submit" className="project-btn btn-save">
+                    Save
+                  </button>
+                  <button
+                    type="button"
+                    className="project-btn btn-cancel"
+                    onClick={() => setEditingProjectId(null)}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            ) : (
+              // --- PROJECT DISPLAY ---
+              <>
+                <h6 className="project-headline">{p.headline}</h6>
+                <p className="project-description">{p.full_description}</p>
+                <p className="project-budget"> ${p.budget}</p>
+                <div className="project-actions">
+                  <button
+                    className="project-btn btn-edit"
+                    onClick={() => handleEditClick(p)}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    className="project-btn btn-delete"
+                    onClick={() => handleDelete(p.id)}
+                  >
+                    Delete
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

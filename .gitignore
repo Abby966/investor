@@ -1,64 +1,16 @@
-# ==============================
 # Python
-# ==============================
-__pycache__/
-*.py[cod]
-*.pyo
-*.pyd
-*.so
-*.egg-info/
-*.egg
-*.log
-*.sqlite3
-db.sqlite3
-
-# Virtual environments
 venv/
-vev/
-env/
-ENV/
-*.env
-
-# Django
-local_settings.py
-media/
-staticfiles/
-*.pot
+__pycache__/
 *.pyc
 
-# ==============================
-# Node / React
-# ==============================
+# Node.js
 node_modules/
-build/
 dist/
-frontend/node_modules/
-frontend/.env
-frontend/.next
-frontend/.parcel-cache
+build/
 
-# ==============================
-# IDEs & Editors
-# ==============================
-.vscode/
-.idea/
-*.sublime-project
-*.sublime-workspace
-*.swp
+# Environment files
+.env
+
+# System files
 .DS_Store
 Thumbs.db
-
-# ==============================
-# OS Files
-# ==============================
-ehthumbs.db
-desktop.ini
-
-# ==============================
-# Docs / temporary files
-# ==============================
-*.docx
-*.pdf
-*.tmp
-*.log
-*.bak

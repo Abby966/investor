@@ -1,103 +1,184 @@
 /* Dashboard.css */
 
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f3f4f6;
-    margin: 0;
-    padding: 0;
+/* --- ✅ FADE-IN ANIMATION --- */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
-  
-  .container {
-    max-width: 1200px;
-    margin: 20px auto;
-    padding: 20px;
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
+}
+
+/* --- ✅ LOADING SPINNER "GIF" --- */
+.loader-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* Use 100vh to fill the whole screen */
+  height: 100vh;
+  box-sizing: border-box; /* Include padding in height */
+}
+
+.loader {
+  border: 6px solid #f3f3f3; /* Light grey */
+  border-top: 6px solid #764ba2; /* Our theme purple */
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+/* ------------------------------- */
+
+
+.page-wrapper {
+  /* This is the main page container */
+  width: 100%;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  padding: 2.5rem;
+  box-sizing: border-box;
+}
+
+.page-title {
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 2rem;
+  text-align: center;
+  font-size: 2.25rem;
+  animation: fadeIn 0.5s ease-out; /* Title fades in too! */
+}
+
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 1.75rem;
+}
+
+.project-card {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.07);
+  display: flex;
+  flex-direction: column;
+  padding: 1.75rem;
+  transition: all 0.3s ease;
   
-  .navbar {
-    background-color: #4f46e5;
-    color:rgb(141, 16, 16);
-    padding: 10px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-radius: 10px;
-    margin-bottom: 20px;
-  }
-  
-  .navbar a {
-    color: white;
-    text-decoration: none;
-    margin-left: 15px;
-    font-weight: 500;
-  }
-  
-  .navbar a:hover {
-    text-decoration: underline;
-    color: brown;
-  }
-  
-  .card {
-    background-color: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-    padding: 15px;
-    margin-bottom: 20px;
-    transition: all 0.3s ease;
-  }
-  
-  .card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
-  }
-  
-  .btn {
-    border-radius: 8px;
-    transition: all 0.2s ease;
-  }
-  
-  .btn-primary {
-    background-color: #4f46e5;
-    border: none;
-    color: white;
-  }
-  
-  .btn-primary:hover {
-    background-color: #3730a3;
-  }
-  
-  .btn-danger {
-    background-color: #ef4444;
-    border: none;
-    color: white;
-  }
-  
-  .btn-danger:hover {
-    background-color: #b91c1c;
-  }
-  
-  .btn-secondary {
-    background-color: #6b7280;
-    border: none;
-    color: white;
-  }
-  
-  .btn-secondary:hover {
-    background-color: #4b5563;
-  }
-  
-  textarea,
-  input {
-    border-radius: 8px;
-    border: 1px solid #d1d5db;
-    padding: 8px;
-    width: 100%;
-    margin-bottom: 10px;
-  }
-  
-  textarea:focus,
-  input:focus {
-    outline: none;
-    border-color: #4f46e5;
-    box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
-  }
-  
+  /* --- ✅ ANIMATION APPLIED --- */
+  animation: fadeIn 0.6s ease-out;
+}
+
+.project-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.project-headline {
+  font-weight: 700;
+  color: #4a00e0; /* Theme purple */
+  font-size: 1.3rem;
+  margin-bottom: 0.75rem;
+}
+
+.project-description {
+  font-size: 0.95rem;
+  color: #555;
+  line-height: 1.6;
+  flex-grow: 1; /* Makes description fill space */
+  margin-bottom: 1rem;
+}
+
+.project-budget {
+  font-weight: 700;
+  font-size: 1.15rem;
+  color: #1e8a5b; /* Green for money */
+  margin-bottom: 1.5rem;
+}
+
+.project-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: auto; /* Pushes buttons to the bottom */
+}
+
+/* Base button style */
+.project-btn {
+  border: none;
+  padding: 0.7rem 1.1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-edit {
+  background-color: #ffc107; /* Yellow */
+  color: #333;
+}
+.btn-edit:hover {
+  background-color: #e0a800;
+  transform: translateY(-2px);
+}
+
+.btn-delete {
+  background-color: #dc3545; /* Red */
+  color: white;
+}
+.btn-delete:hover {
+  background-color: #c82333;
+  transform: translateY(-2px);
+}
+
+.btn-save {
+  background-color: #28a745; /* Green */
+  color: white;
+}
+.btn-save:hover {
+  background-color: #218838;
+  transform: translateY(-2px);
+}
+
+.btn-cancel {
+  background-color: #6c757d; /* Gray */
+  color: white;
+}
+.btn-cancel:hover {
+  background-color: #5a6268;
+  transform: translateY(-2px);
+}
+
+/* Edit Form Styles */
+.edit-form {
+  animation: fadeIn 0.3s ease-out; /* Form fades in too */
+}
+
+.edit-form .form-input,
+.edit-form .form-textarea {
+  width: 100%;
+  padding: 0.8rem;
+  font-size: 0.95rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 0.75rem;
+  box-sizing: border-box;
+}
+
+.edit-form .form-input:focus,
+.edit-form .form-textarea:focus {
+  outline: none;
+  border-color: #764ba2;
+  box-shadow: 0 0 0 3px rgba(118, 75, 162, 0.15);
+}
+
+.edit-form-actions {
+  display: flex;
+  gap: 0.75rem;
+}

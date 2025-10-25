@@ -1,0 +1,115 @@
+/* Auth.css - Styles for Login and Signup */
+
+/* Full-page gradient background */
+body {
+    font-family: 'Poppins', sans-serif; /* Add this font in your index.html for best results */
+    background: linear-gradient(110deg, #f9f0ff 0%, #e9efff 100%);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  /* The "glass" container */
+  .auth-container {
+    max-width: 420px;
+    width: 100%;
+    padding: 2.5rem;
+    background: rgba(255, 255, 255, 0.45);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .auth-title {
+    font-weight: 700;
+    font-size: 2.25rem;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: #333;
+  }
+  
+  /* Modern form inputs */
+  .auth-form-group {
+    margin-bottom: 1.25rem;
+  }
+  
+  .auth-label {
+    display: block;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 0.5rem;
+  }
+  
+  .auth-input,
+  .auth-select {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    font-size: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.8);
+    transition: all 0.3s ease;
+  }
+  
+  .auth-input:focus,
+  .auth-select:focus {
+    outline: none;
+    border-color: #6c63ff; /* A nice purple accent */
+    box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.15);
+  }
+  
+  /* The main button */
+  .auth-button {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff;
+    background-color: #6c63ff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(108, 99, 255, 0.2);
+  }
+  
+  .auth-button:hover {
+    background-color: #5a52d9;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(108, 99, 255, 0.3);
+  }
+  
+  /* Link at the bottom (e.g., "Don't have an account?") */
+  .auth-toggle-link {
+    text-align: center;
+    margin-top: 1.5rem;
+    font-size: 0.95rem;
+    color: #555;
+  }
+  
+  .auth-toggle-link a {
+    color: #6c63ff;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  
+  .auth-toggle-link a:hover {
+    color: #5a52d9;
+    text-decoration: underline;
+  }
+  
+  /* Error message */
+  .auth-error {
+    background-color: rgba(255, 0, 0, 0.1);
+    color: #d90000;
+    border: 1px solid rgba(255, 0, 0, 0.2);
+    padding: 0.85rem 1rem;
+    border-radius: 8px;
+    text-align: center;
+    margin-bottom: 1.25rem;
+    font-size: 0.9rem;
+  }

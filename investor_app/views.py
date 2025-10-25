@@ -7,11 +7,8 @@ from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import get_user_model
 from rest_framework import generics
-# users/views.py
-from rest_framework.decorators import api_view, permission_classes
 
-
-
+# Import your models and serializers
 from .models import CustomUser, Project, ChatMessage, ProjectInterest
 from .serializers import (
     UserSerializer,
@@ -24,6 +21,149 @@ from .serializers import (
 
 
 User = get_user_model()
+
+from .serializers import UserDetailSerializer,UserUpdateSerializer
+# ... (other imports)
+from .models import ProjectInterest 
+from .serializers import ChatContactSerializer 
+from django.db.models import Q 
+
+from .models import InvestorProfile # 
+from .serializers import InvestorProfileSerializer 
+
+
+class ProfileView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        serializer = UserDetailSerializer(request.user)
+        return Response(serializer.data)
+
+    # ✅ ADD THIS PUT METHOD
+    def put(self, request):
+        user = request.user
+        # Use partial=True to allow updating only username or only email
+        serializer = UserUpdateSerializer(user, data=request.data, partial=True)
+        if serializer.is_valid():
+            # Check for username uniqueness manually if needed (DRF doesn't always enforce on partial update)
+            new_username = serializer.validated_data.get('username')
+            if new_username and User.objects.exclude(pk=user.pk).filter(username=new_username).exists():
+                 return Response({"username": ["A user with that username already exists."]}, status=status.HTTP_400_BAD_REQUEST)
+
+            serializer.save()
+            # Return updated details using the Detail serializer
+            return Response(UserDetailSerializer(user).data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+# ... (rest of your views) ...
+class InvestorProfileView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        if request.user.role != 'investor':
+            return Response({"error": "Only investors have this profile."}, status=status.HTTP_403_FORBIDDEN)
+        
+        # get_or_create ensures a profile exists even for older users
+        profile, created = InvestorProfile.objects.get_or_create(user=request.user)
+        serializer = InvestorProfileSerializer(profile)
+        return Response(serializer.data)
+
+    def put(self, request):
+        if request.user.role != 'investor':
+            return Response({"error": "Only investors have this profile."}, status=status.HTTP_403_FORBIDDEN)
+        
+        profile, created = InvestorProfile.objects.get_or_create(user=request.user)
+        serializer = InvestorProfileSerializer(profile, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+class MyChatContactsView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        
+        interests = ProjectInterest.objects.filter(
+            Q(investor=request.user) | # I am the investor
+            Q(project__entrepreneur=request.user) # I am the entrepreneur
+        )
+        
+        
+        serializer = ChatContactSerializer(interests, many=True, context={'request': request})
+        return Response(serializer.data)
+
+class ProfileView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        serializer = UserDetailSerializer(request.user)
+        return Response(serializer.data)
+class ProjectListCreateView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        projects = Project.objects.exclude(entrepreneur=request.user)
+        serializer = ProjectHeadlineSerializer(projects, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = ProjectSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(entrepreneur=request.user)
+            # ✅ THE FIX IS HERE:
+            return Response(serializer.data, status=status.HTTP_201_CREATED) # Was 21
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class SignupView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        # Use your existing UserSerializer to create the user
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            return Response(
+                {"message": "User created successfully"},
+                status=status.HTTP_201_CREATED
+            )
+        
+        # If data is bad, return the serializer errors
+        print(f"❌ Signup errors: {serializer.errors}")
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+class LoginView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        username = request.data.get('username')
+        password = request.data.get('password')
+
+        if not username or not password:
+            return Response(
+                {"error": "Please provide both username and password"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        user = authenticate(username=username, password=password)
+
+        if user is not None:
+            token, created = Token.objects.get_or_create(user=user)
+            
+            # ✅ THE FIX IS HERE: We now also return the user's role
+            return Response({
+                "token": token.key,
+                "role": user.role  # <-- This is the new line
+            }, status=status.HTTP_200_OK)
+        else:
+            return Response(
+                {"error": "Invalid username or password"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+# ... (rest of your views.py)
+# --- ALL YOUR OTHER VIEWS (These are fine) ---
 
 class UpdateNDAView(APIView):
     permission_classes = [IsAuthenticated]
@@ -39,7 +179,6 @@ class InvestorProjectListView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
-        # Only show headlines
         projects = Project.objects.exclude(entrepreneur=request.user)
         serializer = ProjectHeadlineSerializer(projects, many=True)
         return Response(serializer.data)
@@ -63,7 +202,6 @@ class InvestorSignNDAView(APIView):
         interest.nda_signed = True
         interest.save()
         serializer = ProjectInterestSerializer(interest)
-        # TODO: Optionally generate NDA PDF here
         return Response(serializer.data)
 
 class InvestorProjectDetailView(APIView):
@@ -77,84 +215,24 @@ class InvestorProjectDetailView(APIView):
         serializer = ProjectDetailSerializer(project)
         return Response(serializer.data)
 
-
-class SignupView(APIView):
-    def post(self, request):
-        username = request.data.get("username")
-        email = request.data.get("email")
-        password = request.data.get("password")
-        role = request.data.get("role", "entrepreneur")
-
-        if User.objects.filter(username=username).exists():
-            return Response({"error": "Username already taken"}, status=status.HTTP_400_BAD_REQUEST)
-        if User.objects.filter(email=email).exists():
-            return Response({"error": "Email already registered"}, status=status.HTTP_400_BAD_REQUEST)
-
-        # Use create_user to hash password
-        user = User.objects.create_user(username=username, email=email, password=password, role=role)
-
-        return Response({
-            "message": "Signup successful",
-            "username": user.username,
-            "role": user.role
-        }, status=status.HTTP_201_CREATED)
-class MyProjectDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Project.objects.all()
-    serializer_class = ProjectSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get_queryset(self):
-        # Only allow user to edit/delete their own projects
-        return Project.objects.filter(entrepreneur=self.request.user)
-class LoginView(APIView):
-    def post(self, request):
-        username = request.data.get("username")
-        password = request.data.get("password")
-
-        user = authenticate(username=username, password=password)
-        if user is not None:
-            token, _ = Token.objects.get_or_create(user=user)
-            return Response({
-                "token": token.key,
-                "username": user.username,
-                "role": user.role
-            })
-        return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
-
-    def post(self, request):
-        print("📦 Incoming project data:", request.data)
-        print("👤 Authenticated user:", request.user)
-
-        serializer = ProjectSerializer(data=request.data)
-        if serializer.is_valid():
-            project = serializer.save(entrepreneur=request.user)
-            print("✅ Project created successfully:", project)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-        print("❌ Serializer errors:", serializer.errors)  # Show why validation failed
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class ProfileView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request):
-        serializer = UserSerializer(request.user)
-        return Response(serializer.data)
 class ChatMessageView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
+    
     def get(self, request, project_id, other_user_id):
-        # List chat messages between current user and another user for a project
+        # ✅ TWO indent levels (e.g., 8 spaces)
         messages = ChatMessage.objects.filter(
             project_id=project_id,
             sender_id__in=[request.user.id, other_user_id],
             receiver_id__in=[request.user.id, other_user_id]
         ).order_by('timestamp')
+        
         serializer = ChatMessageSerializer(messages, many=True)
         return Response(serializer.data)
 
+    # ✅ ONE indent level
     def post(self, request, project_id, other_user_id):
+        # ✅ TWO indent levels
         serializer = ChatMessageSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(
@@ -164,28 +242,46 @@ class ChatMessageView(APIView):
             )
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-
-class ProjectListCreateView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get(self, request):
-        projects = Project.objects.exclude(entrepreneur=request.user)
-        serializer = ProjectHeadlineSerializer(projects, many=True)  # hide full_description
-        return Response(serializer.data)
-
-    def post(self, request):
-        serializer = ProjectSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save(entrepreneur=request.user)
-            return Response(serializer.data, status=201)
-        return Response(serializer.errors, status=400)
-
 class MyProjectsView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
         projects = Project.objects.filter(entrepreneur=request.user)
-        serializer = ProjectSerializer(projects, many=True)  # full_description visible
+        serializer = ProjectSerializer(projects, many=True)
         return Response(serializer.data)
+
+class MyProjectDetailView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_object(self, pk, user):
+        try:
+            return Project.objects.get(pk=pk, entrepreneur=user)
+        except Project.DoesNotExist:
+            return None
+
+    def get(self, request, pk):
+        project = self.get_object(pk, request.user)
+        if project is None:
+            return Response({"error": "Project not found or you do not have permission."}, status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = ProjectSerializer(project)
+        return Response(serializer.data)
+
+    def put(self, request, pk):
+        project = self.get_object(pk, request.user)
+        if project is None:
+            return Response({"error": "Project not found or you do not have permission."}, status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = ProjectSerializer(project, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk):
+        project = self.get_object(pk, request.user)
+        if project is None:
+            return Response({"error": "Project not found or you do not have permission."}, status=status.HTTP_404_NOT_FOUND)
+        
+        project.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

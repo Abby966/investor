@@ -1,0 +1,82 @@
+/* Navbar.css */
+.navbar-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2.5rem;
+    background-color: #ffffff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  
+    /* --- ✅ THIS IS THE FIX --- */
+    /* We make it "fixed" to the top */
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0; /* This makes it full-width */
+    z-index: 1000; /* This ensures it's on top of all other content */
+  }
+  
+  .navbar-logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #4a00e0; /* Deep purple to match our theme */
+    text-decoration: none;
+  }
+  
+  .navbar-links {
+    display: flex;
+    gap: 1.5rem; /* Space between links */
+  }
+  
+  .navbar-link {
+    text-decoration: none;
+    color: #555;
+    font-weight: 600;
+    padding: 0.5rem;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+  
+  .navbar-link::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: #764ba2;
+    transition: width 0.3s ease;
+  }
+  
+  .navbar-link:hover {
+    color: #000;
+  }
+  
+  .navbar-link:hover::after {
+    width: 100%;
+  }
+  
+  /* We'll use this to show which page is active */
+  .navbar-link.active {
+    color: #764ba2;
+    font-weight: 700;
+  }
+  
+  .navbar-logout-btn {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #fff;
+    background: linear-gradient(90deg, #8e2de2 0%, #4a00e0 100%);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(139, 45, 226, 0.2);
+  }
+  
+  .navbar-logout-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(139, 45, 226, 0.3);
+  }
