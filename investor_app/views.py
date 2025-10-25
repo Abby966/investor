@@ -8,7 +8,12 @@ from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import get_user_model
 from rest_framework import generics
 
-# Import your models and serializers
+from django.shortcuts import render
+
+def frontend_home(request):
+    return render(request, "index.html")  # Your frontend build entry point
+
+
 from .models import CustomUser, Project, ChatMessage, ProjectInterest
 from .serializers import (
     UserSerializer,
