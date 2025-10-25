@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import "../components/Dashboard.css"; // ✅ Our stylish new file
+import "../components/Dashboard.css"; // ✅ Ensure this is present and points to your styles
 
 export default function MyProjectsPage({ myProjects, fetchProjects }) {
   
@@ -63,13 +63,11 @@ export default function MyProjectsPage({ myProjects, fetchProjects }) {
   // --- END OF LOGIC ---
 
 
-  // --- ✅ NEW RENDER LOGIC ---
+  // --- RENDER LOGIC ---
 
-  // 1. Show loading spinner
-  //    (We check for `null` which is the new initial state from App.js)
   if (myProjects === null) {
     return (
-      // We apply the layout fix here too, so the spinner is centered correctly
+      // Apply layout fix and loader wrapper
       <div className="page-wrapper" style={{ paddingTop: '85px' }}>
         <div className="loader-wrapper" style={{ height: '70vh' }}>
           <div className="loader"></div>
@@ -78,11 +76,10 @@ export default function MyProjectsPage({ myProjects, fetchProjects }) {
     );
   }
 
-  // 2. Show empty message
   if (myProjects.length === 0) {
     return (
       <div className="page-wrapper" style={{ paddingTop: '85px' }}>
-        <h2 className="page-title">My Projects</h2>
+        <h2 className="page-title">📁 My Projects</h2>
         <p className="text-muted text-center" style={{fontSize: '1.1rem'}}>
           You haven’t added any projects yet.
         </p>
@@ -90,14 +87,17 @@ export default function MyProjectsPage({ myProjects, fetchProjects }) {
     );
   }
 
-  // 3. Show projects
+  // Show projects
   return (
-    // ✅ BULLETPROOF LAYOUT FIX (same as HomePage.js)
+    // ✅ Use page-wrapper and layout fix
     <div className="page-wrapper" style={{ paddingTop: '85px' }}>
-      <h2 className="page-title">My Projects</h2>
-      <div className="projects-grid">
+      <h2 className="page-title">📁 My Projects</h2>
+      
+      {/* ✅ Use projects-grid class for responsive column layout */}
+      <div className="projects-grid"> 
         {myProjects.map((p) => (
-          <div key={p.id} className="project-card"> {/* Animation is here! */}
+          // ✅ Use project-card for individual card styling
+          <div key={p.id} className="project-card"> 
             {editingProjectId === p.id ? (
               // --- EDIT FORM ---
               <form onSubmit={handleEditSubmit} className="edit-form">
@@ -143,7 +143,7 @@ export default function MyProjectsPage({ myProjects, fetchProjects }) {
               <>
                 <h6 className="project-headline">{p.headline}</h6>
                 <p className="project-description">{p.full_description}</p>
-                <p className="project-budget"> ${p.budget}</p>
+                <p className="project-budget">💰 ${p.budget}</p> 
                 <div className="project-actions">
                   <button
                     className="project-btn btn-edit"

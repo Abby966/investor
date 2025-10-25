@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import axios from "axios"; // ✅ ADD THIS LINE
-import "./HomePage.css"; // Import styles
+import axios from "axios"; 
+import "./HomePage.css"; 
 
 export default function HomePage({ fetchProjects }) {
   const token = localStorage.getItem("token");
@@ -35,11 +35,12 @@ export default function HomePage({ fetchProjects }) {
   };
 
   return (
+    // This wrapper div gets the full-screen black background and sprinkles from HomePage.css
     <div className="home-page-wrapper" style={{ paddingTop: '85px' }}>
       <div className="home-container">
         {/* --- WELCOME BANNER --- */}
         <div className="welcome-banner">
-         
+          
           <div className="welcome-text">
             <h1>Share Your Vision</h1>
             <p>

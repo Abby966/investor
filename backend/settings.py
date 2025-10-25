@@ -39,7 +39,11 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+     
 ]
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+
 
 
 ROOT_URLCONF = 'backend.urls'
@@ -92,6 +96,8 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ],
 }
+ALLOWED_HOSTS = ['*']  # for testing; later replace with your domain
+
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
