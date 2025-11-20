@@ -12,6 +12,7 @@ DEBUG = config('DEBUG', default=False, cast=bool)  # Set False for production
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='*').split(',')
 
+
 # --------------------
 # Installed apps
 # --------------------
