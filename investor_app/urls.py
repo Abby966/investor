@@ -30,7 +30,7 @@ from .views import (
 
 urlpatterns = [
     # Auth paths
-     path('', frontend_home, name='home'), 
+
     path('signup/', SignupView.as_view(), name='signup'),
     path('login/', LoginView.as_view(), name='login'),
     
