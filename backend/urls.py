@@ -1,8 +1,11 @@
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
+from django.views.generic import TemplateView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
- 
-    path('api/', include('investor_app.urls')),
+    path('api/', include('investor_app.urls')),  # your API routes
+
+    # Catch-all route for React frontend
+    re_path(r'^.*$', TemplateView.as_view(template_name='index.html'), name='frontend'),
 ]
