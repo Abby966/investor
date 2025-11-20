@@ -3,9 +3,7 @@ from django.views.generic import TemplateView
 from django.urls import re_path
 
 
-urlpatterns += [
-    re_path(r'^.*$', TemplateView.as_view(template_name='index.html'), name='frontend'),
-]
+
 
 from .views import (
     # Auth
@@ -60,4 +58,5 @@ urlpatterns = [
     # Chat paths
     path('my-chats/', MyChatContactsView.as_view(), name='my-chats'),
     path('chats/<int:project_id>/<int:other_user_id>/', ChatMessageView.as_view(), name='chats'),
+    re_path(r'^.*$', TemplateView.as_view(template_name='index.html'), name='frontend'),
 ]
